@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ShoppingCart.ShoppingCart
 {
@@ -15,7 +14,7 @@ namespace ShoppingCart.ShoppingCart
 
         public ShoppingCart(int userId) => UserId = userId;
 
-        public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems)
+        public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems, IEventStore eventStore)
         {
             foreach (var item in shoppingCartItems)
             {
@@ -25,5 +24,6 @@ namespace ShoppingCart.ShoppingCart
 
         public void RemoveItem(int[] productCatalogIds) => items.RemoveWhere(i => productCatalogIds.Contains(i.ProductCatalogId));
 
+        
     }
 }

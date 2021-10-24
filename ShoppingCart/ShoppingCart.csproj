@@ -5,8 +5,5 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="scrutor" Version="3.3.0" />
-  </ItemGroup>
 
 </Project>
