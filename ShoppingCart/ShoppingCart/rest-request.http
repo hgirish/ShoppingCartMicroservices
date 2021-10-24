@@ -1,0 +1,15 @@
+﻿GET https://localhost:5001/shoppingcart/123
+Accept: application/json
+
+POST https://localhost:5001/shoppingcart/123/items 
+Accept: application/json
+Content-Type: application/json
+
+[1,2]
+
+
+DELETE  https://localhost:5001/shoppingcart/123/items 
+Accept: application/json
+Content-Type: application/json
+
+[3,2]

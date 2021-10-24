@@ -33,5 +33,14 @@ namespace ShoppingCart.ShoppingCart
             _shoppingCartStore.Save(shoppingCart);
             return shoppingCart;
         }
+
+        [HttpDelete("{userId:int}/items")]
+        public ShoppingCart Delete(int userId, [FromBody] int[] productIds)
+        {
+            var shoppingCart = _shoppingCartStore.Get(userId);
+            shoppingCart.RemoveItems(productIds, _eventStore);
+            _shoppingCartStore.Save(shoppingCart);
+            return shoppingCart;
+        }
     }
 }

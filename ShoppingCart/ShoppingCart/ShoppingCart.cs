@@ -22,8 +22,8 @@ namespace ShoppingCart.ShoppingCart
             }
         }
 
-        public void RemoveItem(int[] productCatalogIds) => items.RemoveWhere(i => productCatalogIds.Contains(i.ProductCatalogId));
+        public void RemoveItems(int[] productCatalogIds, IEventStore eventStore) => items.RemoveWhere(i => productCatalogIds.Contains(i.ProductCatalogId));
 
-        
+       
     }
 }
