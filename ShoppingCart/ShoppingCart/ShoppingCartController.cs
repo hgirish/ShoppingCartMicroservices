@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingCart.EventFeed;
 using System;
 using System.Collections.Generic;
 using System.Linq;

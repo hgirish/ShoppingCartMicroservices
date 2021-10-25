@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShoppingCart.EventFeed;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,12 +19,24 @@ namespace ShoppingCart.ShoppingCart
         {
             foreach (var item in shoppingCartItems)
             {
-                items.Add(item);
+               if( items.Add(item))
+                {
+                    eventStore.Raise("ShoppingCartItemAdded", new { UserId, item });
+                }
             }
         }
 
-        public void RemoveItems(int[] productCatalogIds, IEventStore eventStore) => items.RemoveWhere(i => productCatalogIds.Contains(i.ProductCatalogId));
-
-       
+        public void RemoveItems(int[] productCatalogIds, IEventStore eventStore)
+        {
+            //foreach (var item in productCatalogIds)
+            //{
+            //    items.RemoveWhere( i => i.ProductCatalogId == item)
+            //}
+            var itemsRemoved =    items.RemoveWhere(i => productCatalogIds.Contains(i.ProductCatalogId));
+            if (itemsRemoved > 0)
+            {
+                eventStore.Raise("ShoppingCartItemsDeleted", new { UserId, productCatalogIds });
+            }
+        }
     }
 }
