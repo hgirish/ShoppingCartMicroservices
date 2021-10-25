@@ -25,10 +25,10 @@ namespace ShoppingCart.ShoppingCart
         public ShoppingCart Get(int userId) => _shoppingCartStore.Get(userId);
 
         [HttpPost("{userId:int}/items")]
-        public ShoppingCart Post(int userId, [FromBody] int[] productIds)
+        public async Task<ShoppingCart> PostAsync(int userId, [FromBody] int[] productIds)
         {
             var shoppingCart = _shoppingCartStore.Get(userId);
-            var shoppingCartItems = _productCatalogClient.GetShoppingCartItems(productIds);
+            var shoppingCartItems = await _productCatalogClient.GetShoppingCartItemsAsync(productIds);
             shoppingCart.AddItems(shoppingCartItems, _eventStore);
             _shoppingCartStore.Save(shoppingCart);
             return shoppingCart;

@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Polly;
 using ShoppingCart.ShoppingCart;
+using System;
 
 namespace ShoppingCart
 {
@@ -17,6 +19,8 @@ namespace ShoppingCart
             services.AddTransient<IProductCatalogClient, ProductCatalogClient>();
             services.AddTransient<IEventStore, EventStroe>();
 
+            services.AddHttpClient<IProductCatalogClient, ProductCatalogClient>()
+                .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100 * Math.Pow(2, attempt))));
            
         }
 
