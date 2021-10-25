@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: webapi
-          image: exploredocker.azurecr.io/webapi:v1
+          image: shopping-cart
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
