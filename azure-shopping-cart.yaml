@@ -1,0 +1,33 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: azure-shopping-cart
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-shopping-cart
+  template:
+    metadata:
+      labels:
+        app: azure-shopping-cart
+    spec:
+      containers:
+        - name: azure-shopping-cart
+          image: handsregistry.azurecr.io/shopping-cart:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-shopping-cart
+spec:
+  type: LoadBalancer
+  ports:
+    - name: azure-shopping-cart
+      port: 5000
+      targetPort: 80
+  selector:
+    app: azure-shopping-cart
