@@ -28,7 +28,7 @@ namespace ShoppingCart.ShoppingCart
             {
                if( _items.Add(item))
                 {
-                    eventStore.Raise("ShoppingCartItemAdded", new { UserId, item });
+                    eventStore.RaiseAsync("ShoppingCartItemAdded", new { UserId, item });
                 }
             }
         }
@@ -42,7 +42,7 @@ namespace ShoppingCart.ShoppingCart
             var itemsRemoved =    _items.RemoveWhere(i => productCatalogIds.Contains(i.ProductCatalogId));
             if (itemsRemoved > 0)
             {
-                eventStore.Raise("ShoppingCartItemsDeleted", new { UserId, productCatalogIds });
+                eventStore.RaiseAsync("ShoppingCartItemsDeleted", new { UserId, productCatalogIds });
             }
         }
     }

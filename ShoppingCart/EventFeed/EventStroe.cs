@@ -1,31 +1,60 @@
-﻿using System;
+﻿using Dapper;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data.SqlClient;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace ShoppingCart.EventFeed
 {
     public class EventStroe : IEventStore
     {
-        private static readonly List<Event> database = new();
-        public IEnumerable<Event> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
+        
+        private string _connectionString;
+
+        public EventStroe(IConfiguration configuration)
         {
-            return database.Where(e => e.SequenceNumber >= firstEventSequenceNumber && e.SequenceNumber <= lastEventSequenceNumber)
-                .OrderBy(e => e.SequenceNumber);
+            _connectionString = configuration.GetConnectionString("ConnectionStrings:ShoppingCart");
         }
 
-        public void Raise(string eventName, object content)
+        private const string _writeEventSql =
+            @"Insert into EventStore(Name, OccurredAt, Content)
+VALUES (@Name, @OccurredAt, @Content)";
+
+        private const string _readEventsSql =
+            @"Select * from EventStore where ID >= @Start and ID <= @End";
+
+        
+
+        public async Task<IEnumerable<Event>> GetEventsAsync(long firstEventSequenceNumber, long lastEventSequenceNumber)
         {
-            var seqNumber = database.NextSequenceNumber();
-            var newEvent  = new Event(seqNumber, DateTimeOffset.UtcNow, eventName, content);
-            database.Add(newEvent);
+            await using var conn = new SqlConnection(_connectionString);
+            return await conn.QueryAsync<Event>(
+                _readEventsSql,
+                new
+                {
+                    Start = firstEventSequenceNumber,
+                    End = lastEventSequenceNumber
+                });
+        }
+
+        public async Task RaiseAsync(string eventName, object content)
+        {
+            var jsonContent = JsonSerializer.Serialize(content);
+            await using var conn = new SqlConnection(_connectionString);
+            await conn.ExecuteAsync(
+                _writeEventSql,
+                new
+                {
+                    Name = eventName,
+                    OccurredAt = DateTimeOffset.UtcNow,
+                    Content = jsonContent
+                });
+
+            
         }
     }
 
-    public static class DatabaseExtension
-    {
-        public static long NextSequenceNumber(this List<Event> database)
-        {
-            return database.Any() ? database.Max(d => d.SequenceNumber) + 1 : 1;
-        }
-    }
+  
 }

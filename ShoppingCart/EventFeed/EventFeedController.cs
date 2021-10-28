@@ -19,6 +19,6 @@ namespace ShoppingCart.EventFeed
         [HttpGet("")]
         public Event[] Get(
             [FromQuery] long start,
-            [FromQuery] long end = long.MaxValue) => _eventStore.GetEvents(start, end).ToArray();
+            [FromQuery] long end = long.MaxValue) => _eventStore.GetEventsAsync(start, end).ToArray();
     }
 }
