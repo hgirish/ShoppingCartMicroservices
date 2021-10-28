@@ -1,4 +1,4 @@
 ﻿namespace ShoppingCart.ShoppingCart
 {
-    public record Money(string currency, decimal amount);
+    public record Money(string Currency, decimal Amount);
 }

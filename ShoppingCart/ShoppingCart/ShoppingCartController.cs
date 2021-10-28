@@ -23,24 +23,24 @@ namespace ShoppingCart.ShoppingCart
             _eventStore = eventStore;
         }
         [HttpGet("{userId:int}")]
-        public ShoppingCart Get(int userId) => _shoppingCartStore.Get(userId);
+        public async Task<ShoppingCart> GetAsync(int userId) =>await _shoppingCartStore.Get(userId);
 
         [HttpPost("{userId:int}/items")]
         public async Task<ShoppingCart> PostAsync(int userId, [FromBody] int[] productIds)
         {
-            var shoppingCart = _shoppingCartStore.Get(userId);
+            var shoppingCart = await _shoppingCartStore.Get(userId);
             var shoppingCartItems = await _productCatalogClient.GetShoppingCartItemsAsync(productIds);
             shoppingCart.AddItems(shoppingCartItems, _eventStore);
-            _shoppingCartStore.Save(shoppingCart);
+            await _shoppingCartStore.Save(shoppingCart);
             return shoppingCart;
         }
 
         [HttpDelete("{userId:int}/items")]
-        public ShoppingCart Delete(int userId, [FromBody] int[] productIds)
+        public async Task<ShoppingCart> DeleteAsync(int userId, [FromBody] int[] productIds)
         {
-            var shoppingCart = _shoppingCartStore.Get(userId);
+            var shoppingCart = await  _shoppingCartStore.Get(userId);
             shoppingCart.RemoveItems(productIds, _eventStore);
-            _shoppingCartStore.Save(shoppingCart);
+            await _shoppingCartStore.Save(shoppingCart);
             return shoppingCart;
         }
     }
