@@ -17,8 +17,8 @@ namespace ShoppingCart.EventFeed
         }
 
         [HttpGet("")]
-        public Event[] Get(
+        public async Task<Event[]> GetAsync(
             [FromQuery] long start,
-            [FromQuery] long end = long.MaxValue) => _eventStore.GetEventsAsync(start, end).ToArray();
+            [FromQuery] long end = long.MaxValue) =>( await _eventStore.GetEventsAsync(start, end)).ToArray();
     }
 }
