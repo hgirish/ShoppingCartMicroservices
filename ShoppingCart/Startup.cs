@@ -19,6 +19,7 @@ namespace ShoppingCart
             services.AddTransient<IShoppingCartStore, ShoppingCartStore>();
             services.AddTransient<IProductCatalogClient, ProductCatalogClient>();
             services.AddTransient<IEventStore, EventStroe>();
+            services.AddTransient<ICache, Cache>();
 
             services.AddHttpClient<IProductCatalogClient, ProductCatalogClient>()
                 .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100 * Math.Pow(2, attempt))));
