@@ -36,7 +36,7 @@ VALUES
 
         public ShoppingCartStore(IConfiguration configuration)
         {
-            connectionString = configuration.GetConnectionString("ConnectionStrings:ShoppingCart");
+            connectionString = configuration.GetConnectionString("ShoppingCart");
         }
        
 

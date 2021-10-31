@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ShoppingCart.EventFeed;
 using System;
 using System.Collections.Generic;
@@ -13,14 +15,17 @@ namespace ShoppingCart.ShoppingCart
         private readonly IShoppingCartStore _shoppingCartStore;
         private readonly IProductCatalogClient _productCatalogClient;
         private readonly IEventStore _eventStore;
+        private readonly ILogger<ShoppingCartController> _logger;
 
         public ShoppingCartController(IShoppingCartStore shoppingCartStore,
             IProductCatalogClient productCatalogClient,
-            IEventStore eventStore)
+            IEventStore eventStore, 
+            ILogger<ShoppingCartController> logger)
         {
             _shoppingCartStore = shoppingCartStore;
             _productCatalogClient = productCatalogClient;
             _eventStore = eventStore;
+            _logger = logger;
         }
         [HttpGet("{userId:int}")]
         public async Task<ShoppingCart> GetAsync(int userId) =>await _shoppingCartStore.Get(userId);
@@ -32,6 +37,7 @@ namespace ShoppingCart.ShoppingCart
             var shoppingCartItems = await _productCatalogClient.GetShoppingCartItemsAsync(productIds);
             shoppingCart.AddItems(shoppingCartItems, _eventStore);
             await _shoppingCartStore.Save(shoppingCart);
+            _logger.LogInformation("Successfully added products to shopping cart {@productIds}, {@shoppingCart}", productIds, shoppingCart);
             return shoppingCart;
         }
 
