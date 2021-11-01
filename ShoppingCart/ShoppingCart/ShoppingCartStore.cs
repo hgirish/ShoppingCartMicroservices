@@ -59,15 +59,15 @@ VALUES
                 var shoppingCartId = shoppingCart.Id ??
                     await conn.QuerySingleAsync<int>(insertShoppingCartSql, new { shoppingCart.UserId }, tx);
 
-                await conn.ExecuteAsync(deleteAllForShoppingCartSql,(new { UserId = shoppingCart.UserId }, tx));
+                await conn.ExecuteAsync(deleteAllForShoppingCartSql,new { UserId = shoppingCart.UserId }, tx);
 
                 await conn.ExecuteAsync(addAllForShoppingCartSql,
                     shoppingCart.Items.Select(x => new
                     {
-                        shoppingCart,
+                        shoppingCartId,
                         x.ProductCatalogId,
-                        ProductDescription = x.Description,
                         x.ProductName,
+                        ProductDescription = x.Description,                       
                         x.Price.Amount,
                         x.Price.Currency
                     }),tx);

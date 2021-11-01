@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Enrichers.Span;
+using Serilog.Formatting.Json;
 
 namespace ShoppingCart
 {
@@ -22,7 +24,16 @@ namespace ShoppingCart
             .UseSerilog((context,logger) =>
             {
                 logger.Enrich.FromLogContext()
-                .WriteTo.ColoredConsole();
+                .Enrich.WithSpan();
+                if (context.HostingEnvironment.IsDevelopment())
+                {
+                    logger.WriteTo.ColoredConsole(outputTemplate: @"{Timestamp:yyyy-MM-dd HH:mm:ss} {TraceId} {Level:u3} {Message} {NewLine} {Exception}");
+                }
+                else
+                {
+                    logger.WriteTo.Console(new JsonFormatter());
+                }
+                
             })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
