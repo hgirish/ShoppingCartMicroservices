@@ -18,9 +18,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
-          env:
-            - name: STARTUPDLL
-              value: "api/ShoppingCart.dll"
+          
           livenessProbe:
             httpGet:
               path: /health/live
